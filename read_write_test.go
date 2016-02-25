@@ -144,11 +144,10 @@ var _ = Describe("Write & Read", func() {
 
 		result := (read(write(val))).(map[*MapKey]interface{})
 		for k, v := range result {
-			actualKey := (*k).key.([]interface{})
+			actualKey := (*k).Key.([]interface{})
 			Expect(len(actualKey)).To(Equal(3))
 			testArr := [3]int{actualKey[0].(int), actualKey[1].(int), actualKey[2].(int)}
 			Expect(val[testArr]).To(Equal(v))
 		}
 	})
-
 })

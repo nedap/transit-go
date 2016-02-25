@@ -114,7 +114,7 @@ var _ = Describe("JSON Reader", func() {
 		Expect(len(resultMap)).To(Equal(3))
 
 		for k, v := range resultMap {
-			realKey := k.Key().([]interface{})
+			realKey := k.Key.([]interface{})
 			firstElem := realKey[0]
 			firstInt, ok := firstElem.(int)
 			Expect(ok)
