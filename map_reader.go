@@ -9,12 +9,12 @@ type MapReader interface {
 type MapBuilder struct{}
 
 func (b MapBuilder) Init() interface{} {
-	return make(map[interface{}]interface{})
+	return make(map[*MapKey]interface{})
 }
 
 func (b MapBuilder) Add(m interface{}, key, val interface{}) interface{} {
-	actualMap, _ := m.(map[interface{}]interface{})
-	actualMap[key] = val
+	actualMap, _ := m.(map[*MapKey]interface{})
+	actualMap[newMapKey(key)] = val
 	return actualMap
 }
 
