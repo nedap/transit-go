@@ -27,6 +27,18 @@ var _ = Describe("Write & Read", func() {
 		return result
 	}
 
+	It("Can use the same buffer", func() {
+		obj := "hi there"
+		var buffer bytes.Buffer
+		writer := NewJSONWriter(&buffer)
+		err := writer.Write(obj)
+		Expect(err).To(BeNil())
+		reader := NewJSONReader(&buffer)
+		result := reader.Read()
+
+		Expect(result).To(Equal(obj))
+	})
+
 	It("roundtrips nil values", func() {
 		var val interface{}
 		val = nil
