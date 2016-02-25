@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jwkoelewijn/transit-go.svg?branch=master)](https://travis-ci.org/jwkoelewijn/transit-go)
+
 Attempt to implement Cognitect's Transit format in Go.
 See http://transit-format.org
 
