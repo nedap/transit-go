@@ -5,24 +5,32 @@ Example
 =======
 
 ```go
-thing := map[int]string{1: "hello", 2: "world"}
+import (
+  "bytes"
+  "fmt"
+  . "github.com/jwkoelewijn/transit-go"
+)
 
-var buffer bytes.Buffer
-writer := NewJSONWriter(&buffer)
-err := writer.Write(thing)
-
-if err != nil {
-  panic(err)
+func main() {
+  thing := map[int]string{1: "hello", 2: "world"}
+  
+  var buffer bytes.Buffer
+  writer := NewJSONWriter(&buffer)
+  err := writer.Write(thing)
+  
+  if err != nil {
+    panic(err)
+  }
+  str := string(writer.Buffer().Bytes())
+  fmt.Println(str)
+  // Outputs: ["^ ","~i1","hello","~i2","world"]
+  reader := NewJSONReader(&buffer)
+  result := reader.Read()
+  
+  fmt.Printf("%+v\n", result)
+  // Outputs: map[1:hello 2:world]
+  // Mind that the return type of Read() is interface{} and the map is of type map[interface{}]interface{}
 }
-str := string(writer.Buffer().Bytes())
-fmt.Println(str)
-// Outputs: ["^ ","~i1","hello","~i2","world"]
-reader := NewJSONReader(&buffer)
-result := reader.Read()
-
-fmt.Printf("%+v\n", result)
-// Outputs: map[1:hello 2:world]
-// Mind that the return type of Read() is interface{} and the map is of type map[interface{}]interface{}
 ```
 
 Implementation 
