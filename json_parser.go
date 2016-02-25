@@ -176,16 +176,6 @@ func (p JsonParser) parseMapUntilToken(asMapKey bool, cache ReadCache, handler *
 	return mr.Complete(mb), nil
 }
 
-func (p JsonParser) peekToken() (string, error) {
-	reader := p.decoder.Buffered()
-	charBuf := make([]byte, 1, 1)
-	_, err := reader.Read(charBuf)
-	if err != nil {
-		return "", err
-	}
-	return string(charBuf), nil
-}
-
 func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayReadHandler) (interface{}, error) {
 	nextToken := p.nextToken()
 
