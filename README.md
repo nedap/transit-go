@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jwkoelewijn/transit-go.svg?branch=master)](https://travis-ci.org/jwkoelewijn/transit-go)
+[![Build Status](https://travis-ci.org/nedap/transit-go.svg?branch=master)](https://travis-ci.org/nedap/transit-go)
 
 Attempt to implement Cognitect's Transit format in Go.
 See http://transit-format.org
@@ -10,7 +10,7 @@ Example
 import (
   "bytes"
   "fmt"
-  . "github.com/jwkoelewijn/transit-go"
+  . "github.com/nedap/transit-go"
 )
 
 func main() {
