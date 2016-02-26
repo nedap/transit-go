@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jwkoelewijn/transit-go/constants"
+	"github.com/nedap/transit-go/constants"
 )
 
 type JsonParser struct {

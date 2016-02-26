@@ -3,7 +3,7 @@ package transit_go
 import (
 	"fmt"
 
-	"github.com/jwkoelewijn/transit-go/constants"
+	"github.com/nedap/transit-go/constants"
 )
 
 type baseParser struct {

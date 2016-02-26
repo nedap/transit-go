@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"github.com/jwkoelewijn/transit-go/constants"
+	"github.com/nedap/transit-go/constants"
 	"strconv"
 )
 
