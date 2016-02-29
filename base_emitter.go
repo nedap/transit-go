@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/jwkoelewijn/transit-go/constants"
+	"github.com/nedap/transit-go/constants"
 )
 
 type baseEmitter struct {
