@@ -107,7 +107,7 @@ func NewJSONWriter(buffer *bytes.Buffer) JSONWriter {
 	return JSONWriter{transmitWriter{buffer: buffer, emitter: emitter, handlers: defaultWriteHandlers()}}
 }
 
-func NewJSONWriterWithHandlers(buffer *bytes.Buffer, customHandlers map[reflect.Type]WriteHandler) JSONWriter {
+func NewJSONWriterWithHandlers(buffer *bytes.Buffer, customHandlers WriteHandlerMap) JSONWriter {
 	handlers := defaultWriteHandlers()
 
 	for typ, handler := range customHandlers {
