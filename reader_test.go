@@ -84,13 +84,24 @@ var _ = Describe("JSON Reader", func() {
 	})
 
 	It("reads a simple map", func() {
-		result := readString("[\"^ \",\"key\",12]")
-		Expect(result).To(Equal(map[interface{}]interface{}{"key": 12}))
+		result := readString("[\"^ \",\"key\",12]").(map[*MapKey]interface{})
+		expected := map[string]int{"key": 12}
+
+		for mapKey, v := range result {
+			actualKey := mapKey.Key.(string)
+			Expect(v).To(Equal(expected[actualKey]))
+		}
 	})
 
 	It("reads a non-stringable simple map", func() {
-		result := readString("[\"^ \",\"~i1\",\"hello\", \"~i2\", \"world\"]")
-		Expect(result).To(Equal(map[interface{}]interface{}{1: "hello", 2: "world"}))
+		r := readString("[\"^ \",\"~i1\",\"hello\", \"~i2\", \"world\"]")
+		result := r.(map[*MapKey]interface{})
+		expected := map[int]string{1: "hello", 2: "world"}
+
+		for mapKey, v := range result {
+			actualKey := mapKey.Key.(int)
+			Expect(v).To(Equal(expected[actualKey]))
+		}
 	})
 
 	It("reads a simple map with cached keys", func() {
@@ -101,8 +112,12 @@ var _ = Describe("JSON Reader", func() {
 		Expect(ok)
 		Expect(len(resultSlice)).To(Equal(3))
 		for _, v := range resultSlice {
-			subResult := v.(map[interface{}]interface{})
-			Expect(subResult).To(Equal(m))
+			subResult := v.(map[*MapKey]interface{})
+
+			for mapKey, val := range subResult {
+				realKey := mapKey.Key.(string)
+				Expect(val).To(Equal(m[realKey]))
+			}
 		}
 	})
 
@@ -114,7 +129,7 @@ var _ = Describe("JSON Reader", func() {
 		Expect(len(resultMap)).To(Equal(3))
 
 		for k, v := range resultMap {
-			realKey := k.Key().([]interface{})
+			realKey := k.Key.([]interface{})
 			firstElem := realKey[0]
 			firstInt, ok := firstElem.(int)
 			Expect(ok)
@@ -137,12 +152,16 @@ var _ = Describe("JSON Reader", func() {
 
 		pointReader := ReadHandler{
 			FromRep: func(rep interface{}) (interface{}, error) {
-				repAsMap, ok := rep.(map[interface{}]interface{})
+				repAsMap, ok := rep.(map[*MapKey]interface{})
 				if !ok {
-					return nil, fmt.Errorf("Expected to be able to type assert to map[interface{}]interface{}")
+					return nil, fmt.Errorf("Expected to be able to type assert to map[*MapKey]interface{}")
+				}
+				pointMap := make(map[string]interface{})
+				for mapKey, v := range repAsMap {
+					pointMap[mapKey.Key.(string)] = v
 				}
 
-				res := Point{x: float32(repAsMap["x"].(float64)), y: float32(repAsMap["y"].(float64))}
+				res := Point{x: float32(pointMap["x"].(float64)), y: float32(pointMap["y"].(float64))}
 
 				return res, nil
 			},

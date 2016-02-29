@@ -78,16 +78,11 @@ func characterReadHandler() ReadHandler {
 
 /* cMapReadHandler */
 type MapKey struct {
-	key interface{}
+	Key interface{}
 }
 
 func newMapKey(key interface{}) *MapKey {
-	return &MapKey{key: key}
-}
-
-func (mk MapKey) Key() interface{} {
-	k := mk.key
-	return k
+	return &MapKey{Key: key}
 }
 
 type cMapArrayReader struct {

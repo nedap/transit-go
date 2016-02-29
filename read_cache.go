@@ -1,6 +1,6 @@
 package transit_go
 
-import "github.com/jwkoelewijn/transit-go/constants"
+import "github.com/nedap/transit-go/constants"
 
 type ReadCache interface {
 	CacheRead(str string, asMapKey bool, parser Parser) interface{}
