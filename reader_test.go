@@ -144,6 +144,27 @@ var _ = Describe("JSON Reader", func() {
 		}
 	})
 
+	It("turns unknown types into tagged values", func() {
+		result := readString("[\"~#point\",[\"^ \",\"x\",3.140000104904175,\"y\",100.0]]")
+		tv, ok := result.(TaggedValue)
+		Expect(ok)
+
+		Expect(tv.Tag).To(Equal("point"))
+		valMap, ok := tv.Rep.(map[*MapKey]interface{})
+		Expect(ok)
+		Expect(len(valMap)).To(Equal(2))
+
+		expected := map[string]float64{
+			"x": 3.140000104904175,
+			"y": 100.0,
+		}
+
+		for k, v := range valMap {
+			realKey := k.Key.(string)
+			Expect(v).To(Equal(expected[realKey]))
+		}
+	})
+
 	It("allows custom readers", func() {
 		type Point struct {
 			x float32

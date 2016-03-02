@@ -229,6 +229,7 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 					}
 				} else {
 					// default decode
+					p.nextToken()
 					parsedVal, err := p.parseVal(false, cache)
 					if err != nil {
 						return nil, err
