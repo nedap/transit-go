@@ -49,10 +49,10 @@ func defaultReadHandlers() ReadHandlerMap {
 }
 
 func NewJSONReader(buffer *bytes.Buffer) JSONReader {
-	return NewJSONReaderWithHandlers(buffer, map[string]ReadHandler{})
+	return NewJSONReaderWithHandlers(buffer, ReadHandlerMap{})
 }
 
-func NewJSONReaderWithHandlers(buffer *bytes.Buffer, customHandlers map[string]ReadHandler) JSONReader {
+func NewJSONReaderWithHandlers(buffer *bytes.Buffer, customHandlers ReadHandlerMap) JSONReader {
 	handlers := defaultReadHandlers()
 
 	for tag, handler := range customHandlers {
