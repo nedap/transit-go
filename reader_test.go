@@ -170,7 +170,7 @@ var _ = Describe("JSON Reader", func() {
 		point := Point{x: 3.14, y: 100}
 
 		buffer := bytes.NewBufferString("[\"~#point\",[\"^ \",\"x\",3.140000104904175,\"y\",100.0]]")
-		customHandlers := map[string]ReadHandler{
+		customHandlers := ReadHandlerMap{
 			"point": pointReader,
 		}
 		reader := NewJSONReaderWithHandlers(buffer, customHandlers)
