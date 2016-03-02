@@ -148,6 +148,23 @@ var _ = Describe("JSON Writer", func() {
 		Expect(result).To(MatchRegexp("\"\\^\\d\",\"Enschede\""))
 	})
 
+	It("marshals nested maps", func() {
+		m := map[string]interface{}{
+			"id":     12,
+			"action": "delete",
+			"resource": map[string]interface{}{
+				"owner_type":    "Store",
+				"owner_id":      5,
+				"resource_type": "Cleaner",
+				"resource_id":   3,
+			},
+		}
+
+		result := write(writer, m)
+		// Test whether the result has a map as value for the 'resource' key
+		Expect(result).To(MatchRegexp("\"resource\",\\[\"\\^ \","))
+	})
+
 	It("marshals a map with an intslice as key and byte slices as values", func() {
 		m := map[[3]int][]byte{
 			[3]int{1, 2, 3}:    []byte("goodbye"),

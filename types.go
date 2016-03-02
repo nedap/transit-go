@@ -1,9 +1,6 @@
 package transit_go
 
-import (
-	"fmt"
-	"reflect"
-)
+import "fmt"
 
 type TaggedValue struct {
 	Tag string
@@ -55,11 +52,11 @@ type Set interface {
 }
 
 type setStruct struct {
-	backingMap map[interface{}]bool
+	backingMap map[*MapKey]bool
 }
 
 func NewSet() Set {
-	return setStruct{backingMap: make(map[interface{}]bool)}
+	return setStruct{backingMap: make(map[*MapKey]bool)}
 }
 
 func NewSetFrom(elements []interface{}) Set {
@@ -72,31 +69,37 @@ func NewSetFrom(elements []interface{}) Set {
 
 func (s setStruct) Add(elem interface{}) interface{} {
 	if !s.Contains(elem) {
-		s.backingMap[elem] = true
+		s.backingMap[newMapKey(elem)] = true
 	}
 	return elem
 }
 
 func (s setStruct) Contains(elem interface{}) bool {
-	_, found := s.backingMap[elem]
-	return found
+	for mapKey, _ := range s.backingMap {
+		if mapKey.Key == elem {
+			return true
+		}
+	}
+	return false
 }
 
 func (s setStruct) Remove(elem interface{}) bool {
-	elem, found := s.backingMap[elem]
-	if found {
-		delete(s.backingMap, elem)
-		return true
+	for mapKey, _ := range s.backingMap {
+		if mapKey.Key == elem {
+			delete(s.backingMap, mapKey)
+			return true
+		}
 	}
 	return false
 }
 
 func (s setStruct) Items() []interface{} {
 	var items []interface{}
-	keys := reflect.ValueOf(s.backingMap).MapKeys()
-	for _, key := range keys {
-		items = append(items, key.Interface())
+
+	for mapKey, _ := range s.backingMap {
+		items = append(items, mapKey.Key)
 	}
+
 	return items
 }
 
