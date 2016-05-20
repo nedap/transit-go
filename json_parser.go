@@ -237,7 +237,6 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 					val, err = p.base.decode(tag, parsedVal)
 				}
 				// advance past the end of the object or array
-				p.nextToken()
 				return val, nil
 			}
 		}
