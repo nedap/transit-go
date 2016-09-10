@@ -130,7 +130,9 @@ func (j *JsonEmitter) emitActualMap(entries mapEntries, ignored bool, cache Writ
 		return err
 	}
 	err = j.emitString("", "", constants.MAP_AS_ARRAY, false, cache)
-	j.buffer.WriteString(",")
+	if size > 0 {
+		j.buffer.WriteString(",")
+	}
 	if err != nil {
 		return err
 	}

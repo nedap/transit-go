@@ -122,6 +122,13 @@ var _ = Describe("JSON Writer", func() {
 		Expect(result).To(Equal("[1,2,3,4]"))
 	})
 
+	It("marshals an empty map", func() {
+		m := map[string]string{}
+		result := write(writer, m)
+
+		Expect(result).To(Equal("[\"^ \"]"))
+	})
+
 	It("marshals a simple map", func() {
 		m := map[string]int{"key": 12}
 
