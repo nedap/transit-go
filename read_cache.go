@@ -8,7 +8,7 @@ type ReadCache interface {
 }
 
 type readCache struct {
-	cache []string
+	cache []interface{}
 	index int
 }
 
@@ -19,7 +19,6 @@ func NewReadCache() ReadCache {
 }
 
 func (c *readCache) Init() {
-	c.cache = make([]string, constants.MaxCacheEntries, constants.MaxCacheEntries)
 	c.index = 0
 }
 
@@ -32,26 +31,24 @@ func (c *readCache) CacheRead(str string, asMapKey bool, parser Parser) interfac
 			if c.index == constants.MaxCacheEntries {
 				c.Init()
 			}
-			value := str
+			var value interface{}
+
 			if parser != nil {
 				parseResult, _ := parser.parseString(str)
 				tag, isTag := parseResult.(Tag)
 				if isTag {
-					return tag
+					value = tag
+				} else {
+					value = parseResult
 				}
 			}
-			c.cache[c.index] = value
+			c.cache = append(c.cache, value)
 			c.index++
 		}
 	}
 	if parser != nil {
 		parseResult, _ := parser.parseString(str)
-		tag, isTag := parseResult.(Tag)
-		if isTag {
-			return tag
-		} else {
-			return parseResult
-		}
+		return parseResult
 	} else {
 		return str
 	}

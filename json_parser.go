@@ -106,9 +106,7 @@ func (p JsonParser) parseMapUntilToken(asMapKey bool, cache ReadCache, handler *
 
 	mb := mr.Init()
 
-	nextToken := p.nextToken()
-
-	for !tokenEquals(nextToken, string(endRune)) {
+	for !tokenEquals(p.nextToken(), string(endRune)) {
 
 		key, err := p.parseVal(true, cache)
 		if err != nil {
@@ -169,17 +167,13 @@ func (p JsonParser) parseMapUntilToken(asMapKey bool, cache ReadCache, handler *
 			}
 			mb = mr.Add(mb, key, val)
 		}
-
-		nextToken = p.nextToken()
 	}
 
 	return mr.Complete(mb), nil
 }
 
 func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayReadHandler) (interface{}, error) {
-	nextToken := p.nextToken()
-
-	if nextToken != "]" {
+	if p.nextToken() != "]" {
 		firstVal, err := p.parseVal(false, cache)
 		if err != nil {
 			return nil, err
@@ -193,16 +187,15 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 			} else if isTag {
 				tag := string(tagTag)
 				valHandler, err := p.base.readHandlerMap.lookupHandler(tag)
+				p.nextToken()
 
 				var val interface{}
 				if err == nil {
 					mapHandler, isMapHandler := valHandler.(MapReadHandler)
 					arrayHandler, isArrayHandler := valHandler.(ArrayReadHandler)
 
-					currentToken := p.nextToken()
-					if err != nil {
-						return nil, err
-					}
+					currentToken := p.currentToken()
+
 					tokenDelim, isDelim := currentToken.(json.Delim)
 					currentTokenString := string(tokenDelim)
 					if isDelim && currentTokenString == "{" && isMapHandler {
@@ -219,6 +212,7 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 						// read value and decode normally
 						handler, _ := valHandler.(ReadHandler)
 						parsedVal, err := p.parseVal(false, cache)
+
 						if err != nil {
 							return nil, err
 						}
@@ -229,7 +223,6 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 					}
 				} else {
 					// default decode
-					p.nextToken()
 					parsedVal, err := p.parseVal(false, cache)
 					if err != nil {
 						return nil, err
@@ -237,6 +230,7 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 					val, err = p.base.decode(tag, parsedVal)
 				}
 				// advance past the end of the object or array
+				p.nextToken()
 				return val, nil
 			}
 		}
@@ -251,13 +245,11 @@ func (p JsonParser) parseArray(ignored bool, cache ReadCache, handler *ArrayRead
 
 		ab := arrayReader.Init(0)
 		ab = arrayReader.Add(ab, firstVal)
-		p.nextToken()
-		for !tokenEquals(p.currentToken(), "]") {
+		for !tokenEquals(p.nextToken(), "]") {
 			nextVal, err := p.parseVal(false, cache)
 			if err == nil {
 				ab = arrayReader.Add(ab, nextVal)
 			}
-			p.nextToken()
 		}
 		completeArray := arrayReader.Complete(ab)
 		return completeArray, nil
