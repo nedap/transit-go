@@ -6,25 +6,11 @@ version: 2.1
 commands:
   setup-env:
     steps:
-      - run:
-          name: Setup
-          command: go get github.com/kardianos/govendor
-
       - checkout
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "vendor/vendor.json" }}
-            - v1-dependencies-
 
       - run:
           name: install dependencies
-          command: govendor fetch +missing
-
-      - save_cache:
-          paths:
-            - ./vendor/
-          key: v1-dependencies-{{ checksum "vendor/vendor.json" }}
+          command: go get -t
 
 executors:
   go-executor:
