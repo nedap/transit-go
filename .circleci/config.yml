@@ -1,0 +1,52 @@
+# Golang CircleCI 2.1 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2.1
+
+commands:
+  setup-env:
+    steps:
+      - run:
+          name: Setup
+          command: go get github.com/kardianos/govendor
+
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "vendor/vendor.json" }}
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: govendor fetch +missing
+
+      - save_cache:
+          paths:
+            - ./vendor/
+          key: v1-dependencies-{{ checksum "vendor/vendor.json" }}
+
+executors:
+  go-executor:
+    docker:
+      - image: circleci/golang:1.9
+
+    working_directory: /go/src/github.com/nedap/transit-go
+
+jobs:
+  test:
+    executor: go-executor
+    steps:
+      - setup-env
+      - run:
+          name: run tests
+          command: go test -v `find . -name *_test.go`
+
+workflows:
+  version: 2
+  transit-go:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
