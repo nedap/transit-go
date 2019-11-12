@@ -1,10 +1,9 @@
-[![Build Status](https://travis-ci.org/nedap/transit-go.svg?branch=master)](https://travis-ci.org/nedap/transit-go)
+[![CircleCI](https://circleci.com/gh/nedap/transit-go.svg?style=svg)](https://circleci.com/gh/nedap/transit-go)
 
 Attempt to implement Cognitect's Transit format in Go.
 See http://transit-format.org
 
-Example
-=======
+# Example
 
 ```go
 import (
@@ -15,11 +14,11 @@ import (
 
 func main() {
   thing := map[int]string{1: "hello", 2: "world"}
-  
+
   var buffer bytes.Buffer
   writer := NewJSONWriter(&buffer)
   err := writer.Write(thing)
-  
+
   if err != nil {
     panic(err)
   }
@@ -28,15 +27,15 @@ func main() {
   // Outputs: ["^ ","~i1","hello","~i2","world"]
   reader := NewJSONReader(&buffer)
   result := reader.Read()
-  
+
   fmt.Printf("%+v\n", result)
   // Outputs: map[1:hello 2:world]
   // Mind that the return type of Read() is interface{} and the map is of type map[interface{}]interface{}
 }
 ```
 
-Implementation 
-==============
+# Implementation
+
 The implementation is a translation from transit-java and follows the same principles. Some of them could probably be simplified or be made more Go'ish.
 
 At the moment the ReadHandlers are implemented as structs, because this enables factory methods to actually construct them.
@@ -52,9 +51,7 @@ Arrays are in fact allowed to be used as keys of a map, but the Go compiler will
 the value of a variable, even though the creation will only happen once, and the value is known when memory should be allocated for it.
 This really forced us to use the MapKey abomination. I am open for any suggestions to get around this, and I will welcome PR's with open arms :)
 
-
-Compatibility
-=============
+# Compatibility
 
 At the moment only the JSON reader and writer have been implemented and they have not been tested against the roundtrip tests that were
 released as part of the Transit specification.
@@ -66,8 +63,7 @@ roundtrip tests need some thinking.
 
 Note that this is still an early implementation, so expect to find bugs.
 
-Future work
-===========
+# Future work
 
 JSONVerbose and MessagePack Reader and Writer implementations are not implemented yet.
 
