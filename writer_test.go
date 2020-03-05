@@ -39,7 +39,7 @@ var _ = Describe("JSON Writer", func() {
 		Expect(result).To(Equal("[\"~#'\",\"a string\"]"))
 	})
 
-	It("marshals strings should be escaped", func() {
+	It("marshals strings which should be escaped", func() {
 		result := write(writer, "\\a string")
 		Expect(result).To(Equal("[\"~#'\",\"\\\\a string\"]"))
 	})
