@@ -3,9 +3,11 @@ package transit_go
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
-	"github.com/nedap/transit-go/constants"
 	"strconv"
+
+	"github.com/nedap/transit-go/constants"
 )
 
 const (
@@ -51,7 +53,11 @@ func maybePrefix(prefix, tag, str string) string {
 
 func (j *JsonEmitter) emitString(prefix, tag, str string, asMapKey bool, cache WriteCache) error {
 	outString := cache.CacheWrite(maybePrefix(prefix, tag, str), asMapKey)
-	j.buffer.WriteString(fmt.Sprintf("\"%s\"", outString))
+	value, err := json.Marshal(outString)
+	if err != nil {
+		return err
+	}
+	j.buffer.Write(value)
 	return nil
 }
 
